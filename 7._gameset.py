@@ -3,6 +3,8 @@ import pygame
 ##############################################################
 # 기본 초기화 (반드시 해야 하는 것들)
 pygame.init()
+pygame.mixer.music.load("/Users/jeongjin/Desktop/Coding/pygame/pygame_project/sources/background_music.mp3")
+pygame.mixer.music.play(-1)  # -1을 넣으면 반복 재생
 
 # 화면 크기 설정
 screen_width = 640 # 가로 크기
@@ -18,7 +20,7 @@ clock = pygame.time.Clock()
 
 # 1. 사용자 게임 초기화 (배경 화면, 게임 이미지, 좌표, 속도, 폰트 등)
 current_path = os.path.dirname(__file__) # 현재 파일의 위치 반환
-image_path = os.path.join(current_path, "images") # images 폴더 위치 반환
+image_path = os.path.join(current_path, "sources") # images 폴더 위치 반환
 
 # 배경 만들기
 background = pygame.image.load(os.path.join(image_path, "background.png"))
@@ -30,6 +32,9 @@ stage_height = stage_size[1] # 스테이지의 높이 위에 캐릭터를 두기
 
 # 캐릭터 만들기
 character = pygame.image.load(os.path.join(image_path, "character.png"))
+character_left = pygame.image.load(os.path.join(image_path, "character_left.png"))
+character_right = pygame.image.load(os.path.join(image_path, "character_right.png"))
+
 character_size = character.get_rect().size
 character_width = character_size[0]
 character_height = character_size[1]
@@ -116,10 +121,12 @@ while running:
     # 3. 게임 캐릭터 위치 정의
     character_x_pos += character_to_x
 
-    if character_x_pos < 0:
-        character_x_pos = 0
-    elif character_x_pos > screen_width - character_width:
-        character_x_pos = screen_width - character_width
+    if character_to_x < 0:  # 왼쪽으로 이동
+        screen.blit(character_left, (character_x_pos, character_y_pos))
+    elif character_to_x > 0:  # 오른쪽으로 이동
+        screen.blit(character_right, (character_x_pos, character_y_pos))
+    else:  # 정지 상태
+        screen.blit(character, (character_x_pos, character_y_pos))
 
     # 무기 위치 조정
     # 100, 200 -> 180, 160, 140, ...
